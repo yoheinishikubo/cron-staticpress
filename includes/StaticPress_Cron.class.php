@@ -23,8 +23,9 @@ class StaticPress_Cron {
             'twicedaily' => __('Twice daily', self::TEXT_DOMAIN),
         );
         $this->options = get_option(self::OPTION_NAME);
-        add_action('admin_menu', array( $this, 'add_plugin_page'));
-        add_action('admin_init', array( $this, 'page_init'));
+        add_action('admin_menu', array($this, 'add_plugin_page'));
+        add_filter('plugin_action_links', array($this, 'plugin_setting_links'), 10, 2 );
+        add_action('admin_init', array($this, 'page_init'));
         add_action(self::SCHEDULE_EVENT, array($this, 'execute_build'));
     }
 
@@ -198,6 +199,16 @@ class StaticPress_Cron {
         echo '</select>';
     }
 
+    /**
+     * Create setting page link in plugin list.
+     */
+    public function plugin_setting_links($links, $file) {
+        if ($file === 'staticpress-cron/plugin.php') {
+            $settings_link = '<a href="'.admin_url('/admin.php') . '?page=static-press-cron-options">' . __('Settings') . '</a>';
+            array_unshift($links, $settings_link); // before other links
+        }
+        return $links;
+    }
     /**
      * Execute build.
      */

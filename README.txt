@@ -1,4 +1,4 @@
-=== StaticPress WP-CLI Integration ===
+=== StaticPress Cron ===
 Contributors: yuji.od
 Tags: static, cli
 Requires at least: 4.9
@@ -8,34 +8,35 @@ Requires PHP: 7.1.7
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This plugin provides WP-CLI command for build static files from console/cron.
+This plugin provides scheduled build and WP-CLI command for build from console/cron.
 
 == Description ==
 
-=== Requirments ===
+=== Requirements ===
 
 * StaticPress
     * https://wordpress.org/plugins/staticpress/
 * WP-CLI
     * http://wp-cli.org
 
-=== Usage ===
+=== WP-CLI command usage ===
 
 The user option required.
 
 ```
-wp-cli staticpress build --user=<user_id/username/email>
+wp staticpress build --user=<user_id/username/email>
 ```
 
 When your WordPress is multisite, you can specify a blog.
 
 ```
-wp-cli staticpress build --user=<user_id/username/email> --url=<url>
+wp staticpress build --user=<user_id/username/email> --url=<url>
 ```
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/staticpress-wpcli` directory, or install the plugin through the WordPress plugins screen directly.
+1. Install WP-CLI to server, example location to `/usr/local/bin/wp-cli`.
+1. Upload the plugin files to the `/wp-content/plugins/staticpress-cron` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 == Changelog ==

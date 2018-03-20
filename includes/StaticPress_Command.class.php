@@ -1,6 +1,9 @@
 <?php
 if (class_exists('WP_CLI_Command')) {
 
+    /**
+     * Build static files by StaticPress.
+     */
     class StaticPress_Command extends WP_CLI_Command {
 
         /**

@@ -24,7 +24,7 @@ class StaticPress_Cron {
         );
         $this->options = get_option(self::OPTION_NAME);
         add_action('admin_menu', array($this, 'add_plugin_page'));
-        add_filter('plugin_action_links', array($this, 'plugin_setting_links'), 10, 2 );
+        add_filter('plugin_action_links', array($this, 'plugin_setting_links'), 10, 2);
         add_action('admin_init', array($this, 'page_init'));
         add_action(self::SCHEDULE_EVENT, array($this, 'execute_build'));
     }
@@ -54,8 +54,8 @@ class StaticPress_Cron {
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
-                settings_fields( 'staticpress_cron_group' );
-                do_settings_sections( 'staticpress_cron_admin' );
+                settings_fields('staticpress_cron_group');
+                do_settings_sections('staticpress_cron_admin');
                 submit_button();
             ?>
             </form>
@@ -77,7 +77,7 @@ class StaticPress_Cron {
         register_setting(
             'staticpress_cron_group', // Option group
             self::OPTION_NAME, // Option name
-            array( $this, 'sanitize' ) // Sanitize
+            array($this, 'sanitize') // Sanitize
         );
 
         add_settings_section(
@@ -90,7 +90,7 @@ class StaticPress_Cron {
         add_settings_field(
             'enabled',
             __('Auto build', self::TEXT_DOMAIN),
-            array( $this, 'enabled_callback' ),
+            array($this, 'enabled_callback'),
             'staticpress_cron_admin',
             'staticpress_section'
         );
@@ -98,7 +98,7 @@ class StaticPress_Cron {
         add_settings_field(
             'command',
             __('WP-CLI Path', self::TEXT_DOMAIN),
-            array( $this, 'command_callback' ),
+            array($this, 'command_callback'),
             'staticpress_cron_admin',
             'staticpress_section'
         );
@@ -106,7 +106,7 @@ class StaticPress_Cron {
         add_settings_field(
             'schedule',
             __('Schedule', self::TEXT_DOMAIN),
-            array( $this, 'schedule_callback' ),
+            array($this, 'schedule_callback'),
             'staticpress_cron_admin',
             'staticpress_section'
         );
@@ -172,7 +172,7 @@ class StaticPress_Cron {
     public function enabled_callback() {
         printf(
             '<label><input type="checkbox" id="enabled" name="'.self::OPTION_NAME.'[enabled]" value="1" %s/>%s</label>',
-            !empty( $this->options['enabled'] ) ? 'checked' : '', __('Enabled', self::TEXT_DOMAIN)
+            !empty($this->options['enabled']) ? 'checked' : '', __('Enabled', self::TEXT_DOMAIN)
         );
     }
 
@@ -182,7 +182,7 @@ class StaticPress_Cron {
     public function command_callback() {
         printf(
             '<input type="text" id="command" name="'.self::OPTION_NAME.'[command]" size="50" value="%s" />',
-            isset( $this->options['command'] ) ? esc_attr( $this->options['command']) : ''
+            isset($this->options['command']) ? esc_attr($this->options['command']) : ''
         );
         echo '<br><p class="description">If you don\'t have WP-CLI, you need to <a href="http://wp-cli.org" target="_blank">install</a>.</p>';
     }

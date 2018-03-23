@@ -35,8 +35,8 @@ wp staticpress build --user=<user_id/username/email> --url=<url>
 
 == Installation ==
 
-1. Install WP-CLI to server, example location to `/usr/local/bin/wp-cli`.
 1. Upload the plugin files to the `/wp-content/plugins/staticpress-cron` directory, or install the plugin through the WordPress plugins screen directly.
+1. Install WP-CLI to server, example location to `/usr/local/bin/wp`.
 1. Activate the plugin through the 'Plugins' screen in WordPress
 
 == Changelog ==

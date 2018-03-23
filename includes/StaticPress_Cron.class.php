@@ -203,9 +203,9 @@ class StaticPress_Cron {
      * Create setting page link in plugin list.
      */
     public function plugin_setting_links($links, $file) {
-        if ($file === 'staticpress-cron/plugin.php') {
+        if ($file === basename(realpath(dirname(__FILE__).'/../')).'/plugin.php') {
             $settings_link = '<a href="'.admin_url('/admin.php') . '?page=static-press-cron-options">' . __('Settings') . '</a>';
-            array_unshift($links, $settings_link); // before other links
+            array_unshift($links, $settings_link);
         }
         return $links;
     }

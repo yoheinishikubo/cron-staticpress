@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: StaticPress Cron
+Plugin Name: StaticPress Auto Builder
 Author: yu-ji
 Plugin URI: http://github.com/yujiod/staticpress-cron
 Description: This plugin provides scheduled build and WP-CLI command for build from console/cron.
-Version: 1.0.0
+Version: 1.1.0
 Author URI: http://factage.com
 License: GPL2
 */
@@ -45,11 +45,11 @@ register_deactivation_hook(__FILE__, function () {
 if (!class_exists('static_press')) {
     if (file_exists(wp_normalize_path(WP_PLUGIN_DIR) . '/staticpress')) {
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>StaticPress Cron</strong><br><a href="'.admin_url().'plugins.php?plugin_status=all&paged=1&s">Please activate StaticPress</a></p></div>';
+            echo '<div class="error"><p><strong>StaticPress Auto Builder</strong><br><a href="'.admin_url().'plugins.php?plugin_status=all&paged=1&s">Please activate StaticPress</a></p></div>';
         });
     } else {
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>StaticPress Cron</strong><br><a href="'.admin_url().'plugin-install.php?s=staticpress&tab=search&type=term">Please install StaticPress</a></p></div>';
+            echo '<div class="error"><p><strong>StaticPress Auto Builder</strong><br><a href="'.admin_url().'plugin-install.php?s=staticpress&tab=search&type=term">Please install StaticPress</a></p></div>';
         });
     }
 }

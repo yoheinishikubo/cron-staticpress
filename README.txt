@@ -1,4 +1,4 @@
-=== StaticPress Cron ===
+=== StaticPress Auto Builder ===
 Contributors: yuji.od
 Tags: static, cli
 Requires at least: 4.9

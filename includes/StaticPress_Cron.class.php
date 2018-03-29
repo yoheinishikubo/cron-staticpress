@@ -35,8 +35,8 @@ class StaticPress_Cron {
     public function add_plugin_page() {
         add_submenu_page(
             'static-press',
-            __('Cron setting', self::TEXT_DOMAIN),
-            __('Cron setting', self::TEXT_DOMAIN),
+            __('Auto Builder', self::TEXT_DOMAIN),
+            __('Auto Builder', self::TEXT_DOMAIN),
             'manage_options',
             'static-press-cron-options',
             array($this, 'create_admin_page')
@@ -49,7 +49,7 @@ class StaticPress_Cron {
     public function create_admin_page() {
         ?>
         <div class="wrap">
-            <h2><?php echo __('StaticPress Cron setting', self::TEXT_DOMAIN); ?></h2>
+            <h2><?php echo __('StaticPress Auto Builder', self::TEXT_DOMAIN); ?></h2>
             <?php settings_errors(); ?>
             <form method="post" action="options.php">
             <?php

@@ -27,6 +27,8 @@ class StaticPress_Cron {
         add_filter('plugin_action_links', array($this, 'plugin_setting_links'), 10, 2);
         add_action('admin_init', array($this, 'page_init'));
         add_action(self::SCHEDULE_EVENT, array($this, 'execute_build'));
+        add_action('transition_post_status', array($this, 'transition_post_status'), 10, 3);
+        add_action('post_updated', array($this, 'post_updated'), 10, 3);
     }
 
     /**
@@ -47,6 +49,15 @@ class StaticPress_Cron {
      * Options page callback
      */
     public function create_admin_page() {
+        if (!file_exists($this->options['command'])) {
+            $message = __('The specified WP-CLI command path was not found.', self::TEXT_DOMAIN);
+            add_settings_error(
+                'command',
+                'command',
+                $message,
+                'error'
+            );
+        }
         ?>
         <div class="wrap">
             <h2><?php echo __('StaticPress Auto Builder', self::TEXT_DOMAIN); ?></h2>
@@ -88,17 +99,17 @@ class StaticPress_Cron {
         );
 
         add_settings_field(
-            'enabled',
-            __('Auto build', self::TEXT_DOMAIN),
-            array($this, 'enabled_callback'),
+            'command',
+            __('WP-CLI Path', self::TEXT_DOMAIN),
+            array($this, 'command_callback'),
             'staticpress_cron_admin',
             'staticpress_section'
         );
 
         add_settings_field(
-            'command',
-            __('WP-CLI Path', self::TEXT_DOMAIN),
-            array($this, 'command_callback'),
+            'enabled',
+            __('Schedule build', self::TEXT_DOMAIN),
+            array($this, 'enabled_callback'),
             'staticpress_cron_admin',
             'staticpress_section'
         );
@@ -111,28 +122,38 @@ class StaticPress_Cron {
             'staticpress_section'
         );
 
-        add_action('update_option_'.self::OPTION_NAME, function($old_value, $value) {
-            $schedule_args = array(
-                get_current_user_id(),
-            );
-            if (!empty($value['enabled'])) {
-                if ($value['schedule'] == 'hourly') {
-                    $next_time = strtotime(date('Y-m-d H:00:00', strtotime('next hour')));
-                } else if ($value['schedule'] == 'daily') {
-                    $next_time = strtotime('next day midnight') - (get_option('gmt_offset') * 60 * 60);
-                } else if ($value['schedule'] == 'twicedaily') {
-                    $next_time = strtotime('noon') - (get_option('gmt_offset') * 60 * 60);
-                    if ($next_time < time()) {
-                        $next_time = strtotime('next day midnight', $next_time) - (get_option('gmt_offset') * 60 * 60);
-                    }
-                }
-                wp_clear_scheduled_hook(self::SCHEDULE_EVENT, $schedule_args);
-                wp_schedule_event($next_time, $value['schedule'], self::SCHEDULE_EVENT, $schedule_args);
-            } else {
-                wp_clear_scheduled_hook(self::SCHEDULE_EVENT, $schedule_args);
-            }
-       }, 10, 2);
+        add_settings_field(
+            'status_change_build',
+            __('Status change build', self::TEXT_DOMAIN),
+            array($this, 'status_change_build_callback'),
+            'staticpress_cron_admin',
+            'staticpress_section'
+        );
+
+        add_action('update_option_'.self::OPTION_NAME, array($this, 'update_option'), 10, 2);
     }
+
+    public function update_option($old_value, $value) {
+        $schedule_args = array(
+            get_current_user_id(),
+        );
+        if (!empty($value['enabled']) && file_exists($value['command'])) {
+            if ($value['schedule'] == 'hourly') {
+                $next_time = strtotime(date('Y-m-d H:00:00', strtotime('next hour')));
+            } else if ($value['schedule'] == 'daily') {
+                $next_time = strtotime('next day midnight') - (get_option('gmt_offset') * 60 * 60);
+            } else if ($value['schedule'] == 'twicedaily') {
+                $next_time = strtotime('noon') - (get_option('gmt_offset') * 60 * 60);
+                if ($next_time < time()) {
+                    $next_time = strtotime('next day midnight', $next_time) - (get_option('gmt_offset') * 60 * 60);
+                }
+            }
+            wp_clear_scheduled_hook(self::SCHEDULE_EVENT, $schedule_args);
+            wp_schedule_event($next_time, $value['schedule'], self::SCHEDULE_EVENT, $schedule_args);
+        } else {
+            wp_clear_scheduled_hook(self::SCHEDULE_EVENT, $schedule_args);
+        }
+   }
 
     /**
      * Sanitize each setting field as needed
@@ -148,10 +169,6 @@ class StaticPress_Cron {
             $new_input['command'] = sanitize_text_field($input['command']);
             if (!file_exists($new_input['command'])) {
                 $message = __('The specified WP-CLI command path was not found.', self::TEXT_DOMAIN);
-                if (!empty($new_input['enabled'])) {
-                    $message .= ' ' . __('Enabling cron failed.', self::TEXT_DOMAIN);
-                    $new_input['enabled'] = '';
-                }
                 add_settings_error(
                     'command',
                     'command',
@@ -200,6 +217,17 @@ class StaticPress_Cron {
     }
 
     /**
+     * Get the settings option array and print one of its values
+     */
+    public function status_change_build_callback() {
+        printf(
+            '<label><input type="checkbox" id="status_change_build" name="'.self::OPTION_NAME.'[status_change_build]" value="1" %s/>%s</label>',
+            !empty($this->options['status_change_build']) ? 'checked' : '', __('Enabled', self::TEXT_DOMAIN)
+        );
+        echo '<br><p class="description">Auto build when <code>publish</code>, <code>unpulish</code> and <code>update</code> published post.</p>';
+    }
+
+    /**
      * Create setting page link in plugin list.
      */
     public function plugin_setting_links($links, $file) {
@@ -212,12 +240,40 @@ class StaticPress_Cron {
     /**
      * Execute build.
      */
-    public function execute_build($user) {
+    public function execute_build($user, $background=false) {
         $site_url = get_site_url();
         $command = sprintf('%s staticpress build --user=%d --blog=%s', $this->options['command'], $user, $site_url);
         $result = '';
-        exec($command, $result);
-        echo join("\n", $result);
+        if (!$background) {
+            exec($command, $result);
+            echo join("\n", $result);
+        } else {
+            exec('nohup ' . $command . ' > /dev/null 2>&1 &');
+        }
+    }
+
+    /**
+     * Trasition post status hook.
+     */
+    public function transition_post_status($new_status, $old_status) {
+        if (
+            ($old_status == 'publish' && $new_status != 'publish')
+            or
+            ($old_status != 'publish' && $new_status == 'publish')
+        ) {
+            // Build when the post published or unpublished
+            $this->execute_build(get_current_user_id(), true);
+        }
+    }
+
+    /**
+     * Post updated hook.
+     */
+    public function post_updated($post_ID, $post_after, $post_before) {
+        if ($post_before->post_status == 'publish' && $post_after->post_status == 'publish') {
+            // Build when the published post updated
+            $this->execute_build(get_current_user_id(), true);
+        }
     }
 }
 

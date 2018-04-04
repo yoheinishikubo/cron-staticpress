@@ -171,6 +171,9 @@ class StaticPress_Cron {
         if(isset($input['schedule'])) {
             $new_input['schedule'] = sanitize_text_field($input['schedule']);
         }
+        if(isset($input['status_change_build'])) {
+            $new_input['status_change_build'] = sanitize_text_field($input['status_change_build']);
+        }
         return $new_input;
     }
 

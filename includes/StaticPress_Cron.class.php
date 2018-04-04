@@ -167,15 +167,6 @@ class StaticPress_Cron {
         }
         if(isset($input['command'])) {
             $new_input['command'] = sanitize_text_field($input['command']);
-            if (!file_exists($new_input['command'])) {
-                $message = __('The specified WP-CLI command path was not found.', self::TEXT_DOMAIN);
-                add_settings_error(
-                    'command',
-                    'command',
-                    $message,
-                    'error'
-                );
-            }
         }
         if(isset($input['schedule'])) {
             $new_input['schedule'] = sanitize_text_field($input['schedule']);

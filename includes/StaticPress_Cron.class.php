@@ -18,7 +18,7 @@ class StaticPress_Cron {
      */
     public function __construct() {
         $this->schedules = array(
-            'hourly' => __('Horly', self::TEXT_DOMAIN),
+            'hourly' => __('Hourly', self::TEXT_DOMAIN),
             'daily' => __('Daily', self::TEXT_DOMAIN),
             'twicedaily' => __('Twice daily', self::TEXT_DOMAIN),
         );

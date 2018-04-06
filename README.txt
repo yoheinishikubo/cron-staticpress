@@ -42,6 +42,9 @@ When your WordPress is multisite, you can specify a blog.
 
 == Changelog ==
 
+= 1.1.1 =
+* i18n improvements.
+
 = 1.1.0 =
 * The plugin name is changed to `StaticPress Auto Builder`.
 * Added auto build when `publish`, `unpublish` and `update` published post.

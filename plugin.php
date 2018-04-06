@@ -4,7 +4,7 @@ Plugin Name: StaticPress Auto Builder
 Author: yu-ji
 Plugin URI: http://github.com/yujiod/staticpress-cron
 Description: This plugin provides scheduled build and WP-CLI command for build from console/cron.
-Version: 1.1.0
+Version: 1.1.1
 Author URI: http://factage.com
 License: GPL2
 */

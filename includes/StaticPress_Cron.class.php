@@ -37,8 +37,8 @@ class StaticPress_Cron {
     public function add_plugin_page() {
         add_submenu_page(
             'static-press',
-            __('Auto Builder', self::TEXT_DOMAIN),
-            __('Auto Builder', self::TEXT_DOMAIN),
+            'Auto Builder',
+            'Auto Builder',
             'manage_options',
             'static-press-cron-options',
             array($this, 'create_admin_page')
@@ -60,7 +60,7 @@ class StaticPress_Cron {
         }
         ?>
         <div class="wrap">
-            <h2><?php echo __('StaticPress Auto Builder', self::TEXT_DOMAIN); ?></h2>
+            <h2>StaticPress Auto Builder</h2>
             <?php settings_errors(); ?>
             <form method="post" action="options.php">
             <?php
@@ -195,7 +195,9 @@ class StaticPress_Cron {
             '<input type="text" id="command" name="'.self::OPTION_NAME.'[command]" size="50" value="%s" />',
             isset($this->options['command']) ? esc_attr($this->options['command']) : ''
         );
-        echo '<br><p class="description">If you don\'t have WP-CLI, you need to <a href="http://wp-cli.org" target="_blank">install</a>.</p>';
+        echo '<br><p class="description">';
+        _e('If you don\'t have WP-CLI, you need to <a href="http://wp-cli.org" target="_blank">install</a>', self::TEXT_DOMAIN);
+        echo '</p>';
     }
 
     /**
@@ -218,7 +220,9 @@ class StaticPress_Cron {
             '<label><input type="checkbox" id="status_change_build" name="'.self::OPTION_NAME.'[status_change_build]" value="1" %s/>%s</label>',
             !empty($this->options['status_change_build']) ? 'checked' : '', __('Enabled', self::TEXT_DOMAIN)
         );
-        echo '<br><p class="description">Auto build when <code>publish</code>, <code>unpulish</code> and <code>update</code> published post.</p>';
+        echo '<br><p class="description">';
+        _e('Auto build when <code>publish</code>, <code>unpulish</code> and <code>update</code> published post.', self::TEXT_DOMAIN);
+        echo '</p>';
     }
 
     /**

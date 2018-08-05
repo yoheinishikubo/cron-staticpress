@@ -42,6 +42,9 @@ When your WordPress is multisite, you can specify a blog.
 
 == Changelog ==
 
+= 1.1.2 =
+* Fixed wrong result checking on staticpress fetch. (by @hiraro, thanks.)
+
 = 1.1.1 =
 * i18n improvements.
 

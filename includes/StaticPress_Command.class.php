@@ -53,11 +53,10 @@ if (class_exists('WP_CLI_Command')) {
             do {
                 $processRun = WP_CLI::launch_self('staticpress fetch', array(), array(), true, true);
                 $result = json_decode($processRun->stdout);
-                if (!$result->result) {
-                    WP_CLI::error('Fetch failed.');
-                }
-                foreach ($result->files as $file) {
-                    WP_CLI::log($file->url);
+                if ($result->result) {
+                    foreach ($result->files as $file) {
+                        WP_CLI::log($file->url);
+                    }
                 }
             } while($result->final === false);
 

@@ -41,15 +41,17 @@ register_deactivation_hook(__FILE__, function () {
 });
 
 
+
+
 // Check required plugins
-if (!class_exists('static_press')) {
-    if (file_exists(wp_normalize_path(WP_PLUGIN_DIR) . '/staticpress')) {
+if (!class_exists('staticpress')) {
+    if (file_exists(wp_normalize_path(WP_PLUGIN_DIR) . '/staticpress2019')) {
         add_action('admin_notices', function () {
             echo '<div class="error"><p><strong>StaticPress Auto Builder</strong><br><a href="'.admin_url().'plugins.php?plugin_status=all&paged=1&s">Please activate StaticPress</a></p></div>';
         });
     } else {
         add_action('admin_notices', function () {
-            echo '<div class="error"><p><strong>StaticPress Auto Builder</strong><br><a href="'.admin_url().'plugin-install.php?s=staticpress&tab=search&type=term">Please install StaticPress</a></p></div>';
+            echo '<div class="error"><p><strong>StaticPress Auto Builder</strong><br><a href="'.admin_url().'plugin-install.php?s=staticpress2019&tab=search&type=term">Please install StaticPress</a></p></div>';
         });
     }
 }
